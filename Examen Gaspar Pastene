@@ -1,0 +1,105 @@
+import random
+import csv
+from os import system
+import math
+trabajadores = ["Juan Peres","Maria Garcia","Maria Garcia","Carlos Lopez","Ana Martinez","Pedro Rodriguez","Laura Hernandez","Miguel Sanchez","Isabel Gomez","Francisco Diaz","Elena Fernandez"]
+sueldos = {}
+
+def asignar_sueldos_aleatorios(trabajadores):
+    sueldos = {trabajador: random.randint(300000, 2500000)for trabajador in trabajadores}
+    print("Sueldos aleatorios asignados: ")
+    for trabajador, sueldo in sueldos.items():
+        print(f"{trabajador}: {sueldo}")
+    return sueldos
+    
+def clasificar_sueldos(sueldos):
+    clasificacion ={"Menores a $800000": [], "Entre $800000 y 2000000": [], "Superiores a $2000000": []}
+    
+    for trabajador,sueldo in sueldos.items():
+        if sueldo < 800000:
+            clasificacion["Menores a $800000"].append((trabajador,sueldo))
+        elif sueldo < 2000000:
+            clasificacion["Entre $800000 y 2000000"].append((trabajador, sueldo))
+        else:
+            clasificacion["Superiores a $2000000"].append((trabajador, sueldo))
+
+    print("Clasificacion de sueldos: ")
+    for categoria, empleados in clasificacion.items():
+        print(f"{categoria} - Total: {len(empleados)}")
+        for trabajador, sueldo in empleados:
+            print(f"{trabajador}: {sueldo}")
+        print()
+
+    print(f"Total sueldos: {sum(sueldos.values())}") #da el total de todos los sueldos 
+
+def ver_estats(sueldos): #ver estadisticas
+    #sueldo mas alto 
+    sueldo_masalto = max(sueldos.values())
+    print(f"Sueldo mas alto: {sueldo_masalto}")
+
+    #sueldo mas bajo 
+    sueldo_masbajo = min(sueldos.values())
+    print(f"Sueldo mas bajo: {sueldo_masbajo}")
+
+    #promedio de sueldos 
+    promedio_sueldos = round(sum(sueldos.values()) / len(sueldos), 2) #revisar mas tarde si funciona
+    print(f"Promedio de sueldos: {promedio_sueldos}")
+
+        #Media geometria
+    producto_sueldos = 1
+    for sueldo in sueldos.values():
+        producto_sueldos *= sueldo
+    media_geometrica = round(producto_sueldos **(1.0 / len(sueldos)), 2) #comprobar
+    print(f"Media geometrica: {media_geometrica}")
+
+def  reporte_sueldos(sueldos):
+  with open('sueldos.csv', 'w', newline='') as archivo_csv:
+      escritor_csv = csv.writer(archivo_csv,delimiter=";")
+      escritor_csv.writerow(['Nombre empleado','Sueldo Base','Descuento Salud','Descuento AFP','Sueldo liquido'])
+
+      for trabajador,sueldo in sueldos.items():
+          descuento_salud = round(sueldo * 0.07)
+          descuento_afp = round(sueldo * 0.12)
+          sueldo_liquido = round(sueldo - descuento_salud - descuento_afp)
+          escritor_csv.writerow([trabajador, round(sueldo, 2),descuento_salud, descuento_afp, sueldo_liquido])
+
+
+def menu():
+    salir = False 
+    sueldos = {}
+
+    while not salir:
+        print("Menu:")
+        print("1. Asignar sueldos aleatorios")
+        print("2. Clasificar sueldos")
+        print("3. Ver estadisticas")
+        print("4. Reporte de sueldos")
+        print("5. Salir del programa")
+
+        opcion = input("Ingrese una opcion: ")
+
+        if opcion == "1":
+            sueldos = asignar_sueldos_aleatorios(trabajadores)
+        elif opcion == "2":
+            if sueldos:
+                clasificar_sueldos(sueldos)
+            else:
+                print("Debe asignar sueldos aleatorios primero.")
+        elif opcion == "3":
+            if sueldos:
+                ver_estats(sueldos)
+            else:
+                print("Primero debe asignar sueldos aleatorios.")
+        elif opcion == "4":
+            if sueldos:
+                reporte_sueldos
+            else:
+                print("debe asignar sueldos aleatorios primero.")
+        elif opcion == "5":
+            salir = True
+            print("Saliendo del programa...")
+            print("Desarrollado por Gaspar Pastene")
+            print("Rut 22087050-2")
+        else: print("Opcion invalida. Intente nuevamente porfavor.")
+
+menu()
